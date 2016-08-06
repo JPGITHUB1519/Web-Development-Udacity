@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<style type="text/css">
+	div
+	{
+		padding: 0.5em;
+	}
+
+	.app
+	{
+		
+		text-align: center;
+	}
+
+	.error
+	{
+		color: red;
+	}
+
+</style>
+<body>
+	<h1 class="app">Crud Aplication</h1>
+	<div class="app">	
+		<form method="post">
+			<div>
+				<label>Nombre</label>
+				<input type="text" name="nombre" value="{{nombre}}">
+			</div>
+			<div>
+				<label>Edad</label>
+				<input type="text" name="edad" value="{{edad}}">
+			</div>
+			<div>
+				<input type="submit" name="" value="Registrar">
+				
+			</div>
+
+			<h2 class="error">{{error}}</h2>
+		</form>
+	</div>
+
+</body>
+</html>

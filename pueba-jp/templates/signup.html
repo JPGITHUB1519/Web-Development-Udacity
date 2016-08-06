@@ -1,0 +1,76 @@
+<h<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+</head>
+<style type="text/css">
+	.inputs-content
+	{
+		width: 100%;
+		padding-bottom: 15px;
+
+	}
+
+	.login
+	{
+		width: 50%;
+		
+	}
+
+	.text-center
+	{
+		text-align: center;
+
+	}
+
+	.center-block
+	{
+		margin-left: auto;
+		margin-right: auto;
+
+	}
+
+	.input-login
+	{
+		height: 2.1em;
+	}
+
+	.input-submit
+	{
+		height: 2.5em;
+	}
+
+	.error
+	{
+		color : red;
+	}
+
+</style>
+<body>
+
+	<div class="login center-block">
+		<div class="title">
+			<h1 class="text-center">SignUp</h1>
+		</div>
+
+		<div class="controls center-block">
+			<div class="form">
+				<form method="post">
+					<div class="inputs-content text-center">
+						<input type="text" class="text-center input-login" name="username" placeholder="Username" value="{{username}}">
+					</div>
+					<div class="inputs-content text-center">
+						<input type="password" class= "text-center input-login" name="password" placeholder="Password" value="{{password}}">
+					</div>
+
+						<h2 class="text-center error">{{error_empty}}</h2>
+						<h2 class="text-center error">{{error_exits}}</h2>
+					<div class="inputs-content text-center">
+						<input type="submit" class="input-submit" value="Aceptar">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

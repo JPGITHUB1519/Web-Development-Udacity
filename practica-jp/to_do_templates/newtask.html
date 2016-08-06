@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>New Task</title>
+</head>
+
+<style type="text/css">
+
+	*
+	{
+		box-sizing: border-box;
+	}
+	.row
+	{
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		padding: 15px;
+	}
+
+	.form
+	{
+		width: 100%;
+	}
+
+	.element-title
+	{
+		width: 10%;
+	}
+
+	.element
+	{
+		width: 90%;
+	}
+
+	.center-button
+	{
+		display: block;
+		margin : 0 auto;
+	}
+
+	.submit-container
+	{
+		width: 25%;
+	}
+
+	.text-center
+	{
+		text-align: center;
+	}
+	
+</style>
+
+<body>
+
+	<div class="form">
+		<h1 class="text-center">New Task</h1>
+		<form method="post" action="/newtask">
+			<div class="row">
+				<div class="element-title">
+					<label>task</label>
+				</div>
+				<div class="element">
+					<input type="text" name="name">
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="element-title">
+					<label>Description</label>
+				</div>
+
+				<div class="element">
+					<textarea name="description"></textarea>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="submit-container">
+					<input type="submit" value="Aceptar" class="center-button">
+				</div>
+			</div>
+			</div>
+		</form>
+	</div>
+
+
+
+</body>
+</html>

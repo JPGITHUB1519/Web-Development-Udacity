@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+
+<style type="text/css">
+
+	*
+	{
+		box-sizing: border-box;
+
+	}
+	.row
+	{
+		width: 100%;
+		padding: 15px;
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.box
+	{
+		width: 100%;
+	}
+
+	.name
+	{
+		width: 50%;
+	}
+
+	.date
+	{
+		width: 50%;
+	}
+
+
+</style>
+<body>
+
+	{% for t in task_list %}
+		<div class="row">
+			<div class="name">
+				<h2>{{t.name}}</h2>
+			</div>
+
+			<div class="date">
+				<h2>{{t.date}}</h2>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="box">
+				<p>{{t.description}}</p>
+			</div>
+		</div>
+	{% endfor %}
+</body>
+</html>

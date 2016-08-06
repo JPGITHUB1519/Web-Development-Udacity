@@ -1,0 +1,8 @@
+model class
+
+https://cloud.google.com/appengine/docs/python/datastore/modelclass
+https://cloud.google.com/appengine/docs/python/datastore/datamodeling
+
+data types
+
+https://cloud.google.com/appengine/docs/python/datastore/typesandpropertyclasses

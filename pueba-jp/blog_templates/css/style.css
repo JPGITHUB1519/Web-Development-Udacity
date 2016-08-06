@@ -1,0 +1,26 @@
+body
+{
+	background-color: blue;
+}
+
+.blog-post-row
+{
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+}
+
+.blog-title
+{
+	width : 100%;
+}
+
+.blog-information
+{
+	width : 100%;
+}
+
+.blog-content
+{
+	width: 100%;
+}

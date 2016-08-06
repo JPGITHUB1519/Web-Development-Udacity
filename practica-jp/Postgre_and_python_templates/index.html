@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Form</title>
+</head>
+
+<style type="text/css">
+	.container
+	{
+		width: 960px;
+		margin-right: auto;
+		margin-left : auto;
+	}
+	.row
+	{
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		padding: 15px;
+	}
+
+	.form-element
+	{
+		padding: 2%;
+	}
+
+	.error
+	{
+		color: red;
+	}
+
+</style>
+<body>
+	<div class="container">
+		<h1>Sign-Up</h1>
+		<form method="post">
+			<div class="form-element">
+				<label>Usuario</label>
+				<input type="text" name="nombre">
+
+			</div>
+			<div class="form-element">
+				<label>Password</label>
+				<input type="password" name="password">
+			</div>
+			<div class="form-element">
+				<input type="submit" name="">
+			</div>
+			<h2 class="error">{{error}}</h2>
+		</form>
+	</div>
+</body>
+</html>

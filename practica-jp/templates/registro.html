@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Registro</title>
+</head>
+<body>
+
+	<form method="post" action="/">
+		<fieldset>
+			<legend>Personal information:</legend>
+			<label>
+				Nombre
+				<input type="text" name="nombre" value={{nombre}}>
+			</label>
+			<br>
+
+			<label>
+				Apellido
+				<input type="text" name="apellido" value={{apellido}}>
+			</label>
+			<br>
+
+			<label>
+				Sexo
+				<input type="radio" name="sexo" value="m">Femenino
+				<input type="radio" name="sexo" value="f">Masculino
+				<input type="radio" name="sexo" value="l">Otro
+			</label>
+			<br>
+			<label>
+				Pais
+				<!-- cond for the pais continue so -->
+				<select name="pais" value={{pais}}>
+					{% if pais =="Republica Dominicana" %}
+						<option selected="selected">Republica Dominicana</option>
+					{% else %}
+						<option>Republica Dominicana</option>
+					{% endif %}
+
+					{% if pais =="Usa" %}
+						<option selected="selected">Usa</option>
+					{% else %}
+						<option>Usa</option>
+					{% endif %}
+
+					{% if pais =="Venezuela" %}
+						<option selected="selected">Venezuela</option>
+					{% else %}
+						<option>Venezuela</option>
+					{% endif %}
+				</select>
+			</label>
+			<br>
+			<br>
+			<input type="submit">
+		</fieldset>
+	</form>
+
+	<h1 style="color : red;">{{error}}</h1>
+
+</body>
+</html>

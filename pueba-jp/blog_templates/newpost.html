@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+</head>
+<style type="text/css">
+	*
+	{
+		box-sizing: border-box;
+	}
+	.inputs-content
+	{
+		width: 100%;
+		padding-bottom: 15px;
+
+	}
+
+	.login
+	{
+		width: 50%;
+		
+	}
+
+	.text-center
+	{
+		text-align: center;
+
+	}
+
+	.center-block
+	{
+		margin-left: auto;
+		margin-right: auto;
+
+	}
+
+	.input-login
+	{
+		height: 2.1em;
+	}
+
+	.input-submit
+	{
+		height: 2.5em;
+	}
+
+	.error
+	{
+		color : red;
+	}
+
+	.blog-subject
+	{
+		width: 65%;
+	}
+
+	.blog-content
+	{
+		width: 65%;
+    	height: 150px;
+	}
+
+	.error
+	{
+		color: red;
+	}
+
+</style>
+<body>
+
+	<div class="login center-block">
+		<div class="title">
+			<h1 class="text-center">New Post</h1>
+		</div>
+
+		<div class="controls center-block">
+			<div class="form">
+				<form method="post">
+					<div class="inputs-content text-center ">
+						<label class="blog-subject">Subject</label>
+					</div>
+					<div class="inputs-content text-center">
+						<input type="text" class="text-center input-login" name="subject" placeholder="subject" value='{{subject}}'>
+					</div>
+					<div class="inputs-content text-center">
+						<label>Blog</label>
+					</div>
+					<div class="inputs-content text-center">
+						<textarea class="blog-content" name="content">{{content}}</textarea>
+					</div>
+
+					<div class="inputs-content text-center">
+						<input type="submit" class="input-submit" value="Aceptar">
+					</div>
+				</form>
+				<div class="inputs-content text-center">
+					<h2 class="error">{{error}}</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
