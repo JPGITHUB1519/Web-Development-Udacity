@@ -10,7 +10,7 @@ handlers:
   upload: favicon\.ico
 
 - url: .*
-  script: blog.app
+  script: cookie_hashed.app
 
 libraries:
 - name: webapp2
