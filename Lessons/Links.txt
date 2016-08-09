@@ -1,0 +1,16 @@
+HTML TESTER
+
+http://jsfiddle.net/WW3bh/
+http://scratchpad.io/quiet-underwear-2611
+
+Make Request Online
+
+http://requestmaker.com/
+
+Good courses for app engine
+
+https://www.youtube.com/watch?v=_fATGBdWmw0&index=2&list=PLB88CA57A0D0FFAC6
+
+regular Expression goods
+
+http://web.ontuts.com/snippets/10-expresiones-regulares-imprescindibles-en-desarrollo-web/

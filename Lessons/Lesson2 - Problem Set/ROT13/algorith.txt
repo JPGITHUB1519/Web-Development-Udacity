@@ -1,0 +1,27 @@
+
+lower_case  97 - 122
+	
+	desde a hasta m
+	si l >= 97 and l <= 109 :
+
+		l = l + 13
+
+	desde n hasst z
+	si l >= 110 and l <= 122 :
+
+		l = l - 13
+
+mayus_case 65 - 90
+	
+	desde a hasta m
+	si l >= 65 and l <= 77:
+
+		l = l + 13
+
+	desde n hasst z
+	si l >= 78 and l <= 90 :
+
+		l = l - 13
+
+
+
