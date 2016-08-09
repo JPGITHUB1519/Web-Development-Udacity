@@ -1,0 +1,2 @@
+https://webapp2.readthedocs.io/en/latest/guide/request.html#cookies
+https://webapp2.readthedocs.io/en/latest/guide/response.html#guide-response-setting-cookies

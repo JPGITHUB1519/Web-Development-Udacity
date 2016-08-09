@@ -10,7 +10,7 @@ handlers:
   upload: favicon\.ico
 
 - url: .*
-  script: todo.app
+  script: cookies_color.app
 
 libraries:
 - name: webapp2
