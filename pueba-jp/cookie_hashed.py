@@ -17,15 +17,20 @@
 import webapp2
 import os
 import jinja2
+import hmacj
+import hmac
+
+# variable for secret hmac hashing
+
+SECRET = "python"
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader= jinja2.FileSystemLoader(template_dir), autoescape=True)
 
-import hashlib
 
 # make a new hashing string
 def hash_str(s):
-    return hashlib.md5(s).hexdigest()
+    return hmacj.new(SECRET,s).hexdigest()
 
 # make a string with the format value,hash
 def make_secure_val(s):
