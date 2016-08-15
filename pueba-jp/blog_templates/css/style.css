@@ -3,6 +3,20 @@ body
 	background-color: blue;
 }
 
+.row
+{
+	width: 100%;
+	flex-wrap : wrap;
+	width: 100%;
+	padding: 15px;
+}
+
+.box
+{
+	width: 100%;
+	padding: 1em;
+}
+
 .blog-post-row
 {
 	display: flex;

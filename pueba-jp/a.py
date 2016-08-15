@@ -1,6 +1,5 @@
-import hashlib
-import hmacj
-a = hashlib.md5("1").hexdigest()
-print a
+import re
 
-print hmacj.new("python", "100").hexdigest()
+user_check = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+
+print user_check.match("Je")

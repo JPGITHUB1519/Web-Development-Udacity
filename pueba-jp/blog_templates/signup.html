@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sign-Up</title>
+	<style type="text/css"></style>
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	<div class="row">
+		<div class="box">
+			<h1 class="text-center">Sign-Up</h1>
+		</div>
+	</div>
+	<div class="form-container">
+		<form method="post">
+			<div class="row">
+				<div class="box text-center">
+					<label>Usuario</label>
+				</div>
+				<div class="box text-center">
+					<input name="user" type="text" class="forced-center-block" value="{{ user }}">
+					<p class="text-center error">{{ error_user }}</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="box text-center">
+					<label>Password</label>
+				</div>
+				<div class="box text-center">
+					<input name="password" type="password" type="text" class="forced-center-block">
+					<p class="text-center error">{{ error_password }}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="box text-center">
+					<label>Verify-Password</label>
+				</div>
+				<div class="box text-center">
+					<input name="verify_password" type="password" type="text" class="forced-center-block"><p class="text-center error">{{ error_verify_password }}</p>
+				</div>	
+			</div>
+			<div class="row">
+				<div class="box text-center">
+					<label>Email(Optional)</label>
+				</div>
+				<div class="box text-center">
+					<input name="email" type="text" class="forced-center-block" value="{{ email }}">
+					<p class="text-center error">{{ error_email }}</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="box text-center">
+					<input type="submit">
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
