@@ -54,15 +54,30 @@ def make_pw_hash(name, pw):
 
 # verify if hash mash with a user 
 def valid_pw(name, pw, h):
-    ###Your code here
     obtain_salt = h.split(',')[1]
     test_h = generate_hash(name, pw, obtain_salt) + "," + obtain_salt
     if  test_h == h :
     	return True
     return False
 
-def password_hasher(id, hash) :
-	string = id + "|" + hash
+
+def hash_str(s):
+    return hashlib.md5(s).hexdigest()
+
+def make_secure_val(s):
+    return "%s|%s" % (s, hash_str(s))
+
+def check_secure_val(h):
+    lista = h.split('|')
+
+    if hash_str(lista[0]) == lista[1] :
+
+    	return lista[0]
+
+    return None
+
+# def password_hasher(id, hash) :
+# 	string = id + "|" + hash
 
 # main handler
 class Handler(webapp2.RequestHandler) :
@@ -82,7 +97,7 @@ class Handler(webapp2.RequestHandler) :
 
 # models
 class User(db.Model) :
-	user = db.StringProperty(required = True)
+	username = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)
 	date = db.DateProperty(auto_now_add = True)
 
@@ -166,20 +181,20 @@ class SignUpHandler(Handler):
 
 	def post(self) :
 		# obteniendo datos del request
-		user = self.request.get("user")
+		username = self.request.get("username")
 		password = self.request.get("password")
-		verify_password = self.request.get("verify_password")
+		verify = self.request.get("verify")
 		email = self.request.get("email")
 
 		# variables para almacenar los errores
 		error_user = ""
 		error_password = ""
-		error_verify_password = ""
+		error_verify = ""
 		error_email = ""
 		cond_error = False
 
 		# validando
-		if not self.validate_usuario(user) :
+		if not self.validate_usuario(username) :
 			error_user = "That's not a valid usuario."
 			cond_error = True
 
@@ -187,9 +202,9 @@ class SignUpHandler(Handler):
 			error_password = "That wasn't a valid password."
 			cond_error = True
 		else :
-			if password != verify_password :
+			if password != verify :
 
-				error_verify_password = "Your passwords didn't match."
+				error_verify = "Your passwords didn't match."
 				cond_error = True
 		if email != "" :
 			if not self.validate_email(email) :
@@ -197,25 +212,52 @@ class SignUpHandler(Handler):
 				cond_error = True
 
 		if not cond_error :
-			# si no hay error
-			self.write("hola")
-			user = User(user = user, password = password)
-			user.put()
-			#self.response.set_cookie('user_id', passwordgenerate_hash(user, password))
+			# look for if the user exits
+			user_list = db.GqlQuery("SELECT * FROM User WHERE username = '%s'" % username)
+
+			if user_list :
+				self.write("hay")
+			else :
+				self.write("no hay")
+			# # si no hay error
+			# password = make_pw_hash(username, password)
+			# user = User(username = username, password = password)
+			# user.put()
+			# # generating a cookie for the user
+			# user_cookie =  make_secure_val(str(user.key()))
+			# #self.write(user_cookie)
+			# self.response.set_cookie('user_id', user_cookie)
+			# self.redirect("/welcome")
 		else :
 			# sending error to form
 			self.render("signup.html",
 							error_user= error_user, 
 							error_password = error_password,
-							error_verify_password = error_verify_password,
+							error_verify = error_verify,
 							error_email = error_email, 
-							user = user, 
+							username = username, 
 							email = email)
+
+class WelcomeHandler(Handler) :
+
+	def get(self) :
+		user_cookie_value = self.request.cookies.get("user_id")
+		if check_secure_val(user_cookie_value) :
+			# obtain data from cookie
+			aux = user_cookie_value.split("|")
+			key = aux[0]
+			# getting username from cookie
+			user = db.get(key)
+
+			self.render("bienvenido.html", user = user.username)
+		else :
+			self.redirect("/signup")
 
 app = webapp2.WSGIApplication([
     ('/', BlogHandler),
     ('/newpost', NewPostHandler),
     # passing regular expression to accept anything
     ('/([0-9]+)', PostPage),
-    ('/signup', SignUpHandler)
+    ('/signup', SignUpHandler),
+    ('/welcome', WelcomeHandler)
 ], debug=True)
