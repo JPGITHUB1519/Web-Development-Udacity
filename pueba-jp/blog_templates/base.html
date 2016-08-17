@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!--
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	-->
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+	<title>{% block title %} {% endblock %}</title>
+</head>
+<body>
+	<div class="row header center-block">
+		<div class="box title">
+			<h1 class="fuente-pacifico text-center-only-small-medium">JP BLOG</h1>
+		</div>
+		<div class="box links nav-links-container bg">
+			<div class="row">
+				<div class="box nav-links-box">
+					<a href="#" class="nav-links">Inicio</a>
+				</div>
+				<div class="box nav-links-box">
+					<a href="#" class="nav-links">Inicio</a>
+				</div>
+				<div class="box nav-links-box">
+					<a href="#" class="nav-links">Inicio</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% block content %}
+
+	{% endblock %}
+
+	<div class="footer">
+		<h1 class="text-center">Footer</h1>
+	</div>
+
+</body>

@@ -1,141 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<!--
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	-->
-	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
-	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-	<title>Blog</title>
-</head>
-<!-- <style type="text/css">
-	
-	*
-	{
-		 box-sizing: border-box;
-	}
-	body
-	{
-		background : #E8E8E8;
-	}
-	.row
-	{
-		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-	}
-	.container
-	{
-		width: 100%;
-	}
-	.blog-post-row
-	{
-		display: flex;
-		flex-wrap: wrap;
-		width: 100%;
-		background-color: white;
-		margin-top : 1em;
-		padding : 1em;
-		
-	}
+{% extends "base.html" %}
 
-	.blog-title
-	{
-		width : 100%;
-	}
+{% block content %}
+	{% for p in lista_post%}
+		<div class="blog-post-row">
 
-	.blog-information
-	{
-		width : 100%;
-	}
-
-	.blog-content
-	{
-		width: 100%;
-	}
-	
-
-	.blog-date
-	{
-		color : navy;
-		font-size: 1.5em;
-	}
-
-	/* for tablets */
-	@media only screen and (min-width: 600px)
-	{
-		
-
-
-
-
-	}
-
-	/* For desktop: */
-	@media only screen and (min-width: 960px) 
-	{
-		.container
-		{
-			 max-width: 900px;
-			 margin-left: auto;
-			 margin-right: auto;
-		}
-
-		.blog-title
-		{
-			width : 80%;
-		}
-
-		.blog-information
-		{
-			width: 20%;
-		}
-
-
-	}
-
-</style> -->
-<body>
-	<div class="container">
-		<div class="row center-block header">
-			<div class="box title">
-				<h1 class="fuente-pacifico text-center-only-small-medium">JP BLOG</h1>
+			<div class="blog-title">
+				
+				<h1>{{p.subject}}</h1>
 			</div>
-			<div class="box links nav-links-container bg">
-				<div class="row">
-					<div class="box nav-links-box">
-						<a href="#" class="nav-links">Inicio</a>
-					</div>
-					<div class="box nav-links-box">
-						<a href="#" class="nav-links">Inicio</a>
-					</div>
-					<div class="box nav-links-box">
-						<a href="#" class="nav-links">Inicio</a>
-					</div>
-				</div>
+			<div class="blog-information">
+				<p class="blog-date">{{p.date}}</p>
 			</div>
+	
+			<div class="blog-content">
+				{{p.content}}
+			</div>
+
 		</div>
-	
-		{% for p in lista_post%}
-			<div class="blog-post-row">
-
-				<div class="blog-title">
-					
-					<h1>{{p.subject}}</h1>
-				</div>
-				<div class="blog-information">
-					<p class="blog-date">{{p.date}}</p>
-				</div>
-		
-				<div class="blog-content">
-					{{p.content}}
-				</div>
-
-			</div>
-		{%endfor%}
-	</div>
-
-</body>
-</html>
+	{%endfor %}
+{% endblock %}

@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Sign-Up</title>
-	<style type="text/css"></style>
-	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
-	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Sign-UP{% endblock %}
+
+{% block content %}
 	<div class="row">
 		<div class="box">
 			<h1 class="text-center">Sign-Up</h1>
@@ -59,5 +53,6 @@
 			</div>
 		</form>
 	</div>
+{% endblock %}
 </body>
 </html>
