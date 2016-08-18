@@ -21,6 +21,8 @@ import re
 import random
 import string
 import hashlib
+# i modify hmac normal for fix the error 
+# import hmacj
 
 # import database
 from google.appengine.ext import db
@@ -29,6 +31,9 @@ template_dir = os.path.join(os.path.dirname(__file__), 'blog_templates')
 jinja_env = jinja2.Environment(loader= jinja2.FileSystemLoader(template_dir), autoescape=True)
 
 # global variables
+
+# # it will save not it the producction
+SECRET = 'imsosecret'
 
 # validation variables
 user_check = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -66,9 +71,9 @@ def valid_pw(name, pw, h):
     	return True
     return False
 
-
 def hash_str(s):
-    return hashlib.md5(s).hexdigest()
+	# simuling hmac
+    return hashlib.sha256(s + SECRET).hexdigest()
 
 def make_secure_val(s):
     return "%s|%s" % (s, hash_str(s))
@@ -87,7 +92,6 @@ def check_secure_val(h):
 
 # main handler
 class Handler(webapp2.RequestHandler) :
-
 	def write(self, *a, **kw) :
 		self.response.out.write(*a, **kw)
 
@@ -97,6 +101,17 @@ class Handler(webapp2.RequestHandler) :
 
 	def render(self, template, **kw) :
 		self.write(self.render_str(template, **kw))
+
+	def login(self, user) :
+		# i generate and save a cookie with the user key
+		user_cookie =  make_secure_val(str(user.key()))
+		self.response.set_cookie('user_id', user_cookie)
+
+	def logout(self) :
+		# log out function : delete cookie from browser
+		#deleting cookie permanently
+		self.response.delete_cookie("user_id")
+		#self.response.set_cookie("user_id", None)
 
 # models
 class User(db.Model) :
@@ -120,37 +135,28 @@ class Blog(db.Model, Handler) :
 
 
 class BlogHandler(Handler) :
-
 	def get(self) :
-
 		lista_post = db.GqlQuery("SELECT  * FROM Blog order by date desc limit 10 ")
 		self.render("blog.html", lista_post = lista_post)
-
 
 class NewPostHandler(Handler) :
 
 	def get(self) :
-
 		self.render("newpost.html")
 
 	def post(self) :
-
 		subject = self.request.get("subject")
 		content = self.request.get("content")
 
 		error = ""
 
-
 		if subject and content :
-
 			post = Blog(subject = subject, content = content)
 			post.put()
 			# redirecting with the key of the new post
 			self.redirect('/%s' % str(post.key().id()))
 		else :
-
 			error= "YOU MUST FILL ALL THE FIELDS" 
-
 			self.render("newpost.html", error = error, 
 										subject = subject,
 										content  = content)
@@ -202,12 +208,12 @@ class SignUpHandler(Handler):
 			error_user = "That's not a valid usuario."
 			cond_error = True
 
-		# check if the ingresed user exits in the database
-		user_list = db.GqlQuery("SELECT * FROM User WHERE username = '%s'" % username)
-		if count_registers(user_list) > 0 :
+		# obtaining user
+		user = User.all().filter('username =', username).get() 
+			# if have it exits in the database
+		if user :
 			error_exists = "This User Already Exits in the Database"
 			cond_error = True
-
 
 		if not self.validate_password(password) :
 			error_password = "That wasn't a valid password."
@@ -229,11 +235,7 @@ class SignUpHandler(Handler):
 			password = make_pw_hash(username, password)
 			user = User(username = username, password = password)
 			user.put()
-			# generating a cookie for the user
-			# i generate a cookie with the user key
-			user_cookie =  make_secure_val(str(user.key()))
-			#self.write(user_cookie)
-			self.response.set_cookie('user_id', user_cookie)
+			self.login(user)
 			self.redirect("/welcome")
 		else :
 			# sending error to form
@@ -274,34 +276,20 @@ class LoginHandler(Handler) :
 
 		error_login = ""
 		cond_error = False
-		cond_exito = False
-		# this method is very forced
-		if username and password :
-			user_list = db.GqlQuery("SELECT * FROM User where username = '%s'" % username)
-			for user in user_list :
-				cond_exito = valid_pw(username, password, user.password)
-				if cond_exito :
-					aux_user = user
-					break
-		if not cond_exito :
+		# get only one user that match the filer
+		user = User.all().filter('username =', username).get()
+		# if the password did not match with the hash
+		if not valid_pw(username, password, user.password) :
 			error_login = "Invalid Login"
 			self.render("login.html", error_login = error_login)
 		else :
-			# saving the session in a cookie with the user key
-			user_cookie = make_secure_val(str(aux_user.key()))
-			self.response.set_cookie('user_id', user_cookie)
+			self.login(user)
 			self.redirect("/welcome")
 
 class LogoutHandler(Handler) :
-
 	def get(self) :
-		# log out function : delete cookie from browser
-		
-		#deleting cookie permanently
-		#self.response.delete_cookie("user_id")
-
-		self.response.set_cookie("user_id", None)
 		self.redirect("/signup")
+		self.logout()
 
 
 app = webapp2.WSGIApplication([
