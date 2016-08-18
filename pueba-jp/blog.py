@@ -36,11 +36,17 @@ password_check = re.compile(r"^.{3,20}$")
 email_check = re.compile(r"^[\S]+@[\S]+.[\S]+$")
 
 # global functions
+
+# count registers
+
+def count_registers(dataset) :
+	cont = 0
+	for i in dataset :
+		cont = cont + 1
+	return cont
+
 def make_salt():
     return ''.join(random.choice(string.letters) for x in xrange(5))
-
-# Implement the function valid_pw() that returns True if a user's password 
-# matches its hash. You will need to modify make_pw_hash.
 
 # make password hash
 def generate_hash(name, pw, salt) :
@@ -191,6 +197,7 @@ class SignUpHandler(Handler):
 		error_password = ""
 		error_verify = ""
 		error_email = ""
+		error_exists = ""
 		cond_error = False
 
 		# validando
@@ -198,12 +205,18 @@ class SignUpHandler(Handler):
 			error_user = "That's not a valid usuario."
 			cond_error = True
 
+		# check if the ingresed user exits in the database
+		user_list = db.GqlQuery("SELECT * FROM User WHERE username = '%s'" % username)
+		if count_registers(user_list) > 0 :
+			error_exists = "This User Already Exits in the Database"
+			cond_error = True
+
+
 		if not self.validate_password(password) :
 			error_password = "That wasn't a valid password."
 			cond_error = True
 		else :
 			if password != verify :
-
 				error_verify = "Your passwords didn't match."
 				cond_error = True
 		if email != "" :
@@ -213,21 +226,16 @@ class SignUpHandler(Handler):
 
 		if not cond_error :
 			# look for if the user exits
-			user_list = db.GqlQuery("SELECT * FROM User WHERE username = '%s'" % username)
-
-			if user_list :
-				self.write("hay")
-			else :
-				self.write("no hay")
-			# # si no hay error
-			# password = make_pw_hash(username, password)
-			# user = User(username = username, password = password)
-			# user.put()
-			# # generating a cookie for the user
-			# user_cookie =  make_secure_val(str(user.key()))
-			# #self.write(user_cookie)
-			# self.response.set_cookie('user_id', user_cookie)
-			# self.redirect("/welcome")
+			
+			# si no hay error
+			password = make_pw_hash(username, password)
+			user = User(username = username, password = password)
+			user.put()
+			# generating a cookie for the user
+			user_cookie =  make_secure_val(str(user.key()))
+			#self.write(user_cookie)
+			self.response.set_cookie('user_id', user_cookie)
+			self.redirect("/welcome")
 		else :
 			# sending error to form
 			self.render("signup.html",
@@ -236,7 +244,8 @@ class SignUpHandler(Handler):
 							error_verify = error_verify,
 							error_email = error_email, 
 							username = username, 
-							email = email)
+							email = email,
+							error_exists = error_exists)
 
 class WelcomeHandler(Handler) :
 
