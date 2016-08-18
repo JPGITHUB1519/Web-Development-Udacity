@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %} Welcome {% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="box">
+		<h1>Log-in</h1>
+	</div>
+</div>
+
+
+	<form method="post">
+		<div class="row login-container">
+			<div class="row">
+				<div class="box login-label">
+					<label>Usuario</label>
+				</div>
+				<div class="box login-input">
+					<input type="text" name="username">
+				</div>
+			</div>
+			<div class="row">
+				<div class="box login-label">
+					<label>Contrase&ntilde;a</label>
+				</div>
+				<div class="box login-input">
+					<input type="password" name="password">
+				</div>
+			</div>
+			<div class="row">
+				<div class="box">
+					<input type="submit" value="Sign In">
+					<p class="error">{{ error_login }}</p>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+{% endblock %}

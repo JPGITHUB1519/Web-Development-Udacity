@@ -228,10 +228,12 @@ class SignUpHandler(Handler):
 			# look for if the user exits
 			
 			# si no hay error
+			# i make a hash with a salted value included
 			password = make_pw_hash(username, password)
 			user = User(username = username, password = password)
 			user.put()
 			# generating a cookie for the user
+			# i generate a cookie with the user key
 			user_cookie =  make_secure_val(str(user.key()))
 			#self.write(user_cookie)
 			self.response.set_cookie('user_id', user_cookie)
@@ -262,11 +264,56 @@ class WelcomeHandler(Handler) :
 		else :
 			self.redirect("/signup")
 
+class LoginHandler(Handler) :
+	""" log-in action -> if user exits in the bd make a cookie for save the session"""
+	def get(self) :
+
+		self.render("login.html")
+
+	def post(self) :
+
+		username = self.request.get("username")
+		password = self.request.get("password")
+
+		error_login = ""
+		cond_error = False
+		cond_exito = False
+		# this method is very forced
+		if username and password :
+			user_list = db.GqlQuery("SELECT * FROM User where username = '%s'" % username)
+			for user in user_list :
+				cond_exito = valid_pw(username, password, user.password)
+				if cond_exito :
+					aux_user = user
+					break
+		if not cond_exito :
+			error_login = "Invalid Login"
+			self.render("login.html", error_login = error_login)
+		else :
+			# saving the session in a cookie with the user key
+			user_cookie = make_secure_val(str(aux_user.key()))
+			self.response.set_cookie('user_id', user_cookie)
+			self.redirect("/welcome")
+
+class LogoutHandler(Handler) :
+
+	def get(self) :
+		# log out function : delete cookie from browser
+		
+		#deleting cookie permanently
+		#self.response.delete_cookie("user_id")
+
+		self.response.set_cookie("user_id", None)
+		self.redirect("/signup")
+
+
 app = webapp2.WSGIApplication([
     ('/', BlogHandler),
     ('/newpost', NewPostHandler),
     # passing regular expression to accept anything
     ('/([0-9]+)', PostPage),
     ('/signup', SignUpHandler),
-    ('/welcome', WelcomeHandler)
+    ('/welcome', WelcomeHandler),
+    ("/login", LoginHandler),
+    ('/logout', LogoutHandler)
 ], debug=True)
