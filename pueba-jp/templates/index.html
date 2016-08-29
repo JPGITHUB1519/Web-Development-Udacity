@@ -53,6 +53,14 @@
 		margin : 0;
 		font-size : 17px;
 	}
+
+	.map
+	{
+		text-align: center;
+		display: block;
+   		margin: 0 auto;
+    	padding: 2em;
+	}
 	
 </style>
 <body>
@@ -72,7 +80,9 @@
 		<input type="submit">
 	</form>
 	<hr>
-
+	{% if img_url %}
+		<img src="{{img_url}}" class="map">
+	{% endif %}
 	<!-- showing all the arts -->
 
 	{% for art in arts %}

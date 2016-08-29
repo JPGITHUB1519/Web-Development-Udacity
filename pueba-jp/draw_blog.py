@@ -17,12 +17,47 @@
 import webapp2
 import os
 import jinja2
+from xml.dom import minidom
+import urllib2
 
 # import database
 from google.appengine.ext import db
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader= jinja2.FileSystemLoader(template_dir), autoescape=True)
+
+
+IP_PAGE = "http://ip-api.com/xml/"
+GMAPS_URL = "http://maps.googleapis.com/maps/api/staticmap?size=380x263&sensor=false"
+def get_coords(ip) :
+	# test ip
+	ip = "107.22.175.13"
+	url = IP_PAGE + ip
+	content = None
+
+	try :
+		content = urllib2.urlopen(url)
+	except :
+		None
+
+	if content :
+		parse_xml = minidom.parseString(content.read())
+		lat = parse_xml.getElementsByTagName("lat")[0].childNodes[0].nodeValue
+		lon = parse_xml.getElementsByTagName("lon")[0].childNodes[0].nodeValue
+		return db.GeoPt(lat, lon)
+
+# generating the image from url to send to google api
+def gmaps_img(points):
+    ###Your code here
+    base_markers= "&markers="
+    markers_string = ''
+    for p in points :
+    	markers_string += base_markers + str(p.lat) + "," + str(p.lon)
+
+    url = GMAPS_URL + markers_string
+    return url
+
+
 
 class Handler(webapp2.RequestHandler) :
 
@@ -52,7 +87,7 @@ class Art(db.Model) :
 	art = db.TextProperty(required = True)
 	# save the date automatically
 	created = db.DateTimeProperty(auto_now_add = True) 
-	
+	coords = db.GeoPtProperty()	
 
 class MainHandler(Handler):
 
@@ -64,7 +99,21 @@ class MainHandler(Handler):
 		# remember that in google data store we only can use select * from, all the properties
 		arts = db.GqlQuery("SELECT * FROM Art ORDER BY created DESC")
 
-		self.render("index.html", title = title, art = art, error = error, arts=arts)
+		# prevent the running of multiples queries
+		arts = list(arts)
+
+		# saving who was coordenates
+		points = []
+		for a in arts :
+			if a.coords :
+				points.append(a.coords)
+
+		# generating img url
+		img_url = None
+		if points :
+			img_url = gmaps_img(points)
+
+		self.render("index.html", title = title, art = art, error = error, arts=arts, img_url=img_url)
 
 	
 	def get(self):
@@ -80,6 +129,9 @@ class MainHandler(Handler):
 
 			# creating a new object of the entity
 			a = Art(title=title, art=art)
+			# getting ip
+			my_coords = self.request.remote_addr
+			a.coords = get_coords(my_coords)
 			# save it in the database
 			a.put()
 
