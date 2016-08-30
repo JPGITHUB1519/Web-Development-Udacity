@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>IP LOCATEL</title>
+	<style type="text/css">
+		.text-center
+		{
+			text-align : center;
+		}
+
+		.data
+		{
+			padding : 2em;
+		}
+
+		.text-red
+		{
+			color : red;
+		}
+
+	</style>
+</head>
+<body>
+
+	<h1 class="text-center">IP LOCATOR</h1>
+	<form method="post">
+		<div class="form text-center">
+			<div>
+				<label> IP</label>
+				<input type="text" name = "ip">
+			</div>
+			<div>
+				<input type="submit" style="margin-top : 1em; margin-left : 1em;">
+			</div>
+		</div>
+	</form>
+	{% if country and region and city %}
+		<div class="data text-center">
+			<h2>Country : <span class="text-red">{{ country }}</span></h2>
+			<h2>Region : <span class="text-red">{{ region }}</span></h2>
+			<h2>City : <span class="text-red">{{ city }}</span></h2>
+		</div>
+	{% endif %}
+
+
+</body>
+</html>
