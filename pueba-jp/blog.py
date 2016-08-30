@@ -167,16 +167,13 @@ class BlogHandlerJson(Handler):
 
 
 class NewPostHandler(Handler) :
-
 	def get(self) :
 		self.render("newpost.html")
 
 	def post(self) :
 		subject = self.request.get("subject")
 		content = self.request.get("content")
-
 		error = ""
-
 		if subject and content :
 			post = Blog(subject = subject, content = content)
 			post.put()
@@ -187,7 +184,6 @@ class NewPostHandler(Handler) :
 			self.render("newpost.html", error = error, 
 										subject = subject,
 										content  = content)
-
 # permalink page
 class PostPage(BlogHandler):
     def get(self, post_id):
@@ -224,7 +220,6 @@ class PostPageJson(BlogHandler) :
 		self.response.out.write(result_json)
 
 class SignUpHandler(Handler):
-
 	def validate_usuario(self, usuario) :
 		return user_check.match(usuario)
 
@@ -299,7 +294,6 @@ class SignUpHandler(Handler):
 							error_exists = error_exists)
 
 class WelcomeHandler(Handler) :
-
 	def get(self) :
 		user_cookie_value = self.request.cookies.get("user_id")
 		if check_secure_val(user_cookie_value) :
@@ -316,7 +310,6 @@ class WelcomeHandler(Handler) :
 class LoginHandler(Handler) :
 	""" log-in action -> if user exits in the bd make a cookie for save the session"""
 	def get(self) :
-
 		self.render("login.html")
 
 	def post(self) :
@@ -343,7 +336,7 @@ class LogoutHandler(Handler) :
 
 app = webapp2.WSGIApplication([
     ('/blog', BlogHandler),
-    ('/blog.json',BlogHandlerJson),
+    ('/blog/.json',BlogHandlerJson),
     ('/newpost', NewPostHandler),
     # passing regular expression to accept anything
     ('/blog/([0-9]+)', PostPage),
