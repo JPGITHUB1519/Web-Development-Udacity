@@ -21,6 +21,8 @@ import re
 import random
 import string
 import hashlib
+import json
+import datetime
 # i modify hmac normal for fix the error 
 # import hmacj
 
@@ -84,8 +86,11 @@ def check_secure_val(h):
     if hash_str(lista[0]) == lista[1] :
 
     	return lista[0]
-
     return None
+
+# date to string
+def date_to_string(date):
+	return date.strftime('%a %b %m %X %Y')
 
 # def password_hasher(id, hash) :
 # 	string = id + "|" + hash
@@ -121,7 +126,6 @@ class User(db.Model) :
 
 
 class Blog(db.Model, Handler) :
-
 	subject = db.StringProperty(required = True)
 	content = db.TextProperty(required = True)
 	date = db.DateProperty(auto_now_add = True)
@@ -133,11 +137,34 @@ class Blog(db.Model, Handler) :
 		self._render_text = self.content.replace("\n", "<br>") 
 		return self.render_str("blog.html", post = self)
 
-
+# Main Page with the top 10 links
 class BlogHandler(Handler) :
 	def get(self) :
 		lista_post = db.GqlQuery("SELECT  * FROM Blog order by date desc limit 10 ")
 		self.render("blog.html", lista_post = lista_post)
+
+# BlogHandlerJson
+
+class BlogHandlerJson(Handler):
+	def get(self):
+		lista_post = db.GqlQuery("SELECT  * FROM Blog order by date desc limit 10 ")
+		dicc = []
+		# makin the dictionaries lst
+		for p in lista_post :
+			aux_dic = {}
+			aux_dic["content"] = p.content
+			aux_dic["created"] = date_to_string(p.date)
+			aux_dic["last_modified"] = date_to_string(p.last_modified)
+			aux_dic["subject"] = p.subject
+			dicc.append(aux_dic)
+			aux_dic = {}
+
+		#output dictionary
+		self.response.headers['Content-Type'] = 'application/json'
+		result_json = json.dumps(dicc)
+		self.response.out.write(result_json)
+
+
 
 class NewPostHandler(Handler) :
 
@@ -154,13 +181,14 @@ class NewPostHandler(Handler) :
 			post = Blog(subject = subject, content = content)
 			post.put()
 			# redirecting with the key of the new post
-			self.redirect('/%s' % str(post.key().id()))
+			self.redirect('/blog/%s' % str(post.key().id()))
 		else :
 			error= "YOU MUST FILL ALL THE FIELDS" 
 			self.render("newpost.html", error = error, 
 										subject = subject,
 										content  = content)
 
+# permalink page
 class PostPage(BlogHandler):
     def get(self, post_id):
     	# create key from id
@@ -172,6 +200,28 @@ class PostPage(BlogHandler):
             self.write("ERRROR 404 NOT FOUND THIS PAGE WAS NOT FOUND IN THIS SERVER")
             return
         self.render("permalink.html", post = post)
+
+# permalink json
+class PostPageJson(BlogHandler) :
+	def get(self, post_id) :
+		# create key from id
+		key = db.Key.from_path('Blog', int(post_id))
+		# obtain the model from the key
+		post = db.get(key)
+
+		if not post:
+		    self.write("ERRROR 404 NOT FOUND THIS PAGE WAS NOT FOUND IN THIS SERVER")
+		    return
+		dicc = {}
+		dicc["content"] = post.content
+		dicc["created"] = date_to_string(post.date)
+		dicc["last_modified"] = date_to_string(post.last_modified)
+		dicc["subject"] = post.subject
+		# creating json
+		result_json = json.dumps(dicc)
+		# printing json
+		self.response.headers['Content-Type'] = 'application/json'
+		self.response.out.write(result_json)
 
 class SignUpHandler(Handler):
 
@@ -291,12 +341,13 @@ class LogoutHandler(Handler) :
 		self.redirect("/signup")
 		self.logout()
 
-
 app = webapp2.WSGIApplication([
-    ('/', BlogHandler),
+    ('/blog', BlogHandler),
+    ('/blog.json',BlogHandlerJson),
     ('/newpost', NewPostHandler),
     # passing regular expression to accept anything
-    ('/([0-9]+)', PostPage),
+    ('/blog/([0-9]+)', PostPage),
+    ('/blog/([0-9]+).json', PostPageJson),
     ('/signup', SignUpHandler),
     ('/welcome', WelcomeHandler),
     ("/login", LoginHandler),
