@@ -1,0 +1,10 @@
+For global Variables and Secret keys Variables use :
+
+
+For production :
+
+	production.py ### host it in a different machine
+
+For Development :
+
+	devel.py

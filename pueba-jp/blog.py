@@ -335,14 +335,15 @@ class LogoutHandler(Handler) :
 		self.logout()
 
 app = webapp2.WSGIApplication([
-    ('/blog', BlogHandler),
+	# /? for handling / terminations in urls
+    ('/blog/?', BlogHandler), 
     ('/blog/.json',BlogHandlerJson),
-    ('/newpost', NewPostHandler),
+    ('/newpost/?', NewPostHandler),
     # passing regular expression to accept anything
     ('/blog/([0-9]+)', PostPage),
     ('/blog/([0-9]+).json', PostPageJson),
     ('/signup', SignUpHandler),
-    ('/welcome', WelcomeHandler),
-    ("/login", LoginHandler),
-    ('/logout', LogoutHandler)
+    ('/welcome/?', WelcomeHandler),
+    ("/login/?", LoginHandler),
+    ('/logout/?', LogoutHandler)
 ], debug=True)

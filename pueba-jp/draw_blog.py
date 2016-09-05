@@ -20,6 +20,9 @@ import jinja2
 from xml.dom import minidom
 import urllib2
 
+#library to debugging
+import logging
+
 # import database
 from google.appengine.ext import db
 
@@ -57,7 +60,23 @@ def gmaps_img(points):
     url = GMAPS_URL + markers_string
     return url
 
-
+# hashing table for cache
+CACHE = {}
+# this get the most recent created arts
+def top_arts() :
+	# this is the key of the query in the cache
+	key = "top"
+	if key in CACHE :
+		arts = CACHE[key]
+	else :
+		logging.error("DB QUERY")
+		# executing the query and saving the results in a variable
+		# remember that in google data store we only can use select * from, all the properties
+		arts = db.GqlQuery("SELECT * FROM Art ORDER BY created DESC")
+		# prevent the running of multiples queries
+		arts = list(arts)
+		CACHE[key] = arts
+	return arts
 
 class Handler(webapp2.RequestHandler) :
 
@@ -76,8 +95,6 @@ class Handler(webapp2.RequestHandler) :
 
 
 # in appengine databases are definen by classes and are entities
-# 
-
 
 class Art(db.Model) :
 
@@ -94,14 +111,8 @@ class MainHandler(Handler):
 	# function to render the form
 	# we can render with 
 	def render_front(self, title="", art="", error="") :
-
-		# executing the query and saving the results in a variable
-		# remember that in google data store we only can use select * from, all the properties
-		arts = db.GqlQuery("SELECT * FROM Art ORDER BY created DESC")
-
-		# prevent the running of multiples queries
-		arts = list(arts)
-
+		# getting the top 10 arts
+		arts = top_arts()
 		# saving who was coordenates
 		points = []
 		for a in arts :
@@ -123,10 +134,7 @@ class MainHandler(Handler):
 		#get values
 		title = self.request.get("title")
 		art = self.request.get("art")
-
-
 		if title and art :
-
 			# creating a new object of the entity
 			a = Art(title=title, art=art)
 			# getting ip
@@ -134,16 +142,13 @@ class MainHandler(Handler):
 			a.coords = get_coords(my_coords)
 			# save it in the database
 			a.put()
-
+			# clearing the catch for get it to its original state
+			CACHE.clear()
+			logging.error(CACHE)
 			self.redirect("/")
-
-
 		else :
-
 			error = "We need both, the title and the art work"
 			self.render_front(title, art, error)
-
-
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)

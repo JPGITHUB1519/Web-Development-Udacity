@@ -1,0 +1,1 @@
+After submit clear the cache to return it to its normal state
