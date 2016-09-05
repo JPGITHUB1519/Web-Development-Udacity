@@ -63,10 +63,11 @@ def gmaps_img(points):
 # hashing table for cache
 CACHE = {}
 # this get the most recent created arts
-def top_arts() :
+# update is for always has the cache full and avoid cache stampede
+def top_arts(update = false) :
 	# this is the key of the query in the cache
 	key = "top"
-	if key in CACHE :
+	if not update or key in CACHE :
 		arts = CACHE[key]
 	else :
 		logging.error("DB QUERY")
@@ -142,10 +143,16 @@ class MainHandler(Handler):
 			a.coords = get_coords(my_coords)
 			# save it in the database
 			a.put()
-			# clearing the catch for get it to its original state
-			CACHE.clear()
+			# updating the cache only when writing
+			top_arts(True)
+
+
+			# # clearing the catch for get it to its original state
+			# do not do this for avoid cache stampide
+			# CACHE.clear()
+
 			logging.error(CACHE)
-			self.redirect("/")
+			self.redirect(self.request.url)
 		else :
 			error = "We need both, the title and the art work"
 			self.render_front(title, art, error)
