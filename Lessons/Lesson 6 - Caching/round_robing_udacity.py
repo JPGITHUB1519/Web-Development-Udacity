@@ -14,18 +14,8 @@ SERVERS = ['SERVER1', 'SERVER2', 'SERVER3', 'SERVER4']
 n = -1
 def get_server():
 	global n
-	if n == - 1 or n ==  3:
-		n = 0
-		return SERVERS[0]
-	if n == 0 :
-		n = 1
-		return SERVERS[1]
-	if n == 1 :
-		n = 2
-		return SERVERS[2]
-	if n == 2 :
-		n = 3
-		return SERVERS[3]
+	n += 1
+	return SERVERS[n % len(SERVERS)]
 
 
     ###Your code here.

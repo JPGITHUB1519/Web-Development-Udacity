@@ -25,8 +25,6 @@ import logging
 
 # import database
 from google.appengine.ext import db
-# import memchache
-from google.appengine.api import memcache
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader= jinja2.FileSystemLoader(template_dir), autoescape=True)
@@ -62,21 +60,23 @@ def gmaps_img(points):
     url = GMAPS_URL + markers_string
     return url
 
+# hashing table for cache
+CACHE = {}
 # this get the most recent created arts
 # update is for always has the cache full and avoid cache stampede
-def top_arts(update = False) :
+def top_arts(update = false) :
+	# this is the key of the query in the cache
 	key = "top"
-	# obtaining value from the catch
-	arts = memcache.get(key)
-	if arts is None or update :
+	if not update or key in CACHE :
+		arts = CACHE[key]
+	else :
 		logging.error("DB QUERY")
 		# executing the query and saving the results in a variable
 		# remember that in google data store we only can use select * from, all the properties
 		arts = db.GqlQuery("SELECT * FROM Art ORDER BY created DESC")
 		# prevent the running of multiples queries
 		arts = list(arts)
-		# saving art in the cache
-		memcache.set(key,arts)
+		CACHE[key] = arts
 	return arts
 
 class Handler(webapp2.RequestHandler) :
@@ -150,6 +150,8 @@ class MainHandler(Handler):
 			# # clearing the catch for get it to its original state
 			# do not do this for avoid cache stampide
 			# CACHE.clear()
+
+			logging.error(CACHE)
 			self.redirect(self.request.url)
 		else :
 			error = "We need both, the title and the art work"
