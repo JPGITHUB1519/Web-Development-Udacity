@@ -23,6 +23,10 @@ import string
 import hashlib
 import json
 import datetime
+import logging
+import time
+# import memchache
+from google.appengine.api import memcache
 # i modify hmac normal for fix the error 
 # import hmacj
 
@@ -92,6 +96,26 @@ def check_secure_val(h):
 def date_to_string(date):
 	return date.strftime('%a %b %m %X %Y')
 
+def get_posts(update = False) :
+	""" 
+		This obtain the post from the Cache. The Cache is always update
+		and it get update when a user make a new Post. We only read in the
+		Database when we write on it
+	"""
+	# using the global variable query time
+	global last_query_time
+	key = "post"
+	posts = memcache.get(key)
+	if posts is None or update :
+		logging.error("DBQUERY")
+		# getting post from the database
+		posts = db.GqlQuery("SELECT  * FROM Blog order by date desc limit 10 ")
+		posts = list(posts)
+		# saving the last time query to the database
+		memcache.set("time_last_query", time.time()) 
+		# updating cache
+		memcache.set(key, posts)
+	return posts
 # def password_hasher(id, hash) :
 # 	string = id + "|" + hash
 
@@ -140,11 +164,13 @@ class Blog(db.Model, Handler) :
 # Main Page with the top 10 links
 class BlogHandler(Handler) :
 	def get(self) :
-		lista_post = db.GqlQuery("SELECT  * FROM Blog order by date desc limit 10 ")
-		self.render("blog.html", lista_post = lista_post)
+		# obtaining post from the cache
+		lista_post = get_posts()
+		seconds_last = time.time() - memcache.get("time_last_query")
+		QUERIED = "queried %s seconds ago" % int(seconds_last)
+		self.render("blog.html", lista_post = lista_post, QUERIED = QUERIED)
 
 # BlogHandlerJson
-
 class BlogHandlerJson(Handler):
 	def get(self):
 		lista_post = db.GqlQuery("SELECT  * FROM Blog order by date desc limit 10 ")
@@ -164,8 +190,6 @@ class BlogHandlerJson(Handler):
 		result_json = json.dumps(dicc)
 		self.response.out.write(result_json)
 
-
-
 class NewPostHandler(Handler) :
 	def get(self) :
 		self.render("newpost.html")
@@ -177,6 +201,8 @@ class NewPostHandler(Handler) :
 		if subject and content :
 			post = Blog(subject = subject, content = content)
 			post.put()
+			# Updating the Cache when writing
+			get_posts(True)
 			# redirecting with the key of the new post
 			self.redirect('/blog/%s' % str(post.key().id()))
 		else :
@@ -338,7 +364,7 @@ app = webapp2.WSGIApplication([
 	# /? for handling / terminations in urls
     ('/blog/?', BlogHandler), 
     ('/blog/.json',BlogHandlerJson),
-    ('/newpost/?', NewPostHandler),
+    ('/blog/newpost/?', NewPostHandler),
     # passing regular expression to accept anything
     ('/blog/([0-9]+)', PostPage),
     ('/blog/([0-9]+).json', PostPageJson),

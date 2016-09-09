@@ -15,7 +15,7 @@ handlers:
   static_dir : static
 
 - url: .*
-  script: draw_blog.app
+  script: blog.app
 
 libraries:
 - name: webapp2
