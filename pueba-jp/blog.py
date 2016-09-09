@@ -116,6 +116,29 @@ def get_posts(update = False) :
 		# updating cache
 		memcache.set(key, posts)
 	return posts
+
+def get_permalink(post_id, update = False) :
+
+	#cache reference memcache[postid] = [post, time]
+
+	# create key from id
+    key = db.Key.from_path('Blog', int(post_id))
+    cache_key = str(key)
+    # look for the post in the cache
+    post = memcache.get(cache_key)
+    if not post or update :
+    	logging.error("DBQUERY")
+    	# obtain the model from the key
+    	post = db.get(key)
+    	# saving in the cache the key value and the time requested
+    	query_time = time.time()
+    	memcache.set(cache_key, [post, query_time])
+    else :
+    	# if exists the post in the cache take it
+    	post = memcache.get(cache_key)[0]
+    
+    return post
+
 # def password_hasher(id, hash) :
 # 	string = id + "|" + hash
 
@@ -174,6 +197,7 @@ class BlogHandler(Handler) :
 class BlogHandlerJson(Handler):
 	def get(self):
 		lista_post = db.GqlQuery("SELECT  * FROM Blog order by date desc limit 10 ")
+		#lista_post = Blog.all.order('-created'.fetch(limit = 10))
 		dicc = []
 		# makin the dictionaries lst
 		for p in lista_post :
@@ -213,15 +237,15 @@ class NewPostHandler(Handler) :
 # permalink page
 class PostPage(BlogHandler):
     def get(self, post_id):
-    	# create key from id
-        key = db.Key.from_path('Blog', int(post_id))
-        # obtain the model from the key
-        post = db.get(key)
-
+    	post = get_permalink(post_id)
+    	key = str(db.Key.from_path('Blog', int(post_id)))
+    	# getting the query time
+    	query_time = time.time() - memcache.get(key)[1] 
         if not post:
             self.write("ERRROR 404 NOT FOUND THIS PAGE WAS NOT FOUND IN THIS SERVER")
             return
-        self.render("permalink.html", post = post)
+        QUERIED =  "queried %s seconds ago" % int(query_time)
+        self.render("permalink.html", post = post, QUERIED = QUERIED)
 
 # permalink json
 class PostPageJson(BlogHandler) :
@@ -360,6 +384,13 @@ class LogoutHandler(Handler) :
 		self.redirect("/signup")
 		self.logout()
 
+class FlushCacheHandler(Handler) :
+	def get(self) :
+		# Empty Cache
+		memcache.flush_all()
+		self.redirect("/blog")
+
+
 app = webapp2.WSGIApplication([
 	# /? for handling / terminations in urls
     ('/blog/?', BlogHandler), 
@@ -368,8 +399,9 @@ app = webapp2.WSGIApplication([
     # passing regular expression to accept anything
     ('/blog/([0-9]+)', PostPage),
     ('/blog/([0-9]+).json', PostPageJson),
-    ('/signup', SignUpHandler),
+    ('/blog/signup', SignUpHandler),
     ('/welcome/?', WelcomeHandler),
-    ("/login/?", LoginHandler),
-    ('/logout/?', LogoutHandler)
+    ("/blog/login/?", LoginHandler),
+    ('/blog/logout/?', LogoutHandler),
+    ('/blog/flush/?', FlushCacheHandler)
 ], debug=True)
