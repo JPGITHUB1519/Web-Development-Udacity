@@ -1,0 +1,12 @@
+para relacionar usamos referencepropierty,
+en ndb referenceproperty = keyproperty
+
+https://cloud.google.com/appengine/docs/python/datastore/typesandpropertyclasses#ReferenceProperty
+
+this is the way to go. it explains all type of relations
+https://cloud.google.com/appengine/articles/modeling?csw=1
+
+
+look for it in the list 
+
+https://cloud.google.com/appengine/docs/python/datastore/typesandpropertyclasses
