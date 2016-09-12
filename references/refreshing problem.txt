@@ -1,0 +1,5 @@
+https://discussions.udacity.com/t/problem-while-refreshing-ascii-blog-after-post/177504.
+
+Esto pasa porque las consultas deben tener los mismos ancestros para que a la hora de consultar se asegure que se guarde los cambios mas recientes
+
+The ancestor query will always be fully consistent. Querying by book_key, on the other hand, will not necessarily be consistent: you may find that recent changes will not be shown in that query.

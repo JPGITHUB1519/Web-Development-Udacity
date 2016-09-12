@@ -6,3 +6,12 @@ https://cloud.google.com/appengine/docs/python/datastore/datamodeling
 data types
 
 https://cloud.google.com/appengine/docs/python/datastore/typesandpropertyclasses
+
+
+parameter in url
+
+http://stackoverflow.com/questions/21232962/get-takes-exactly-1-argument-2-given
+
+ndb differences
+
+https://docs.google.com/document/d/1AefylbadN456_Z7BZOpZEXDq8cR8LYu7QgI7bt5V0Iw/edit#

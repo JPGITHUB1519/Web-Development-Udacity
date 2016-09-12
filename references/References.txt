@@ -1,0 +1,13 @@
+model class
+
+https://cloud.google.com/appengine/docs/python/datastore/modelclass
+https://cloud.google.com/appengine/docs/python/datastore/datamodeling
+
+data types
+
+https://cloud.google.com/appengine/docs/python/datastore/typesandpropertyclasses
+
+
+parameter in url
+
+http://stackoverflow.com/questions/21232962/get-takes-exactly-1-argument-2-given
