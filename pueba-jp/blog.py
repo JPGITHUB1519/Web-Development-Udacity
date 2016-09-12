@@ -355,7 +355,7 @@ class WelcomeHandler(Handler) :
 
 			self.render("bienvenido.html", user = user.username)
 		else :
-			self.redirect("/signup")
+			self.redirect("/blog/signup")
 
 class LoginHandler(Handler) :
 	""" log-in action -> if user exits in the bd make a cookie for save the session"""
