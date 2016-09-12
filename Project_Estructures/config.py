@@ -1,0 +1,1 @@
+# This is where app configuration goes. Things like API secrets etc.

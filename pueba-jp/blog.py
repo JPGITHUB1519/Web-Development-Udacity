@@ -372,16 +372,21 @@ class LoginHandler(Handler) :
 		# get only one user that match the filer
 		user = User.all().filter('username =', username).get()
 		# if the password did not match with the hash
-		if not valid_pw(username, password, user.password) :
+		if user :
+			if not valid_pw(username, password, user.password) :
+				error_login = "Invalid Login"
+				self.render("login.html", error_login = error_login)
+			else :
+				self.login(user)
+				self.redirect("/welcome")
+		else :
 			error_login = "Invalid Login"
 			self.render("login.html", error_login = error_login)
-		else :
-			self.login(user)
-			self.redirect("/welcome")
+		
 
 class LogoutHandler(Handler) :
 	def get(self) :
-		self.redirect("/signup")
+		self.redirect("/blog/signup")
 		self.logout()
 
 class FlushCacheHandler(Handler) :

@@ -1,0 +1,2 @@
+http://stackoverflow.com/questions/48458/project-structure-for-google-app-engine
+https://github.com/JPGITHUB1519/gae-boilerplate
