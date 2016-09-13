@@ -10,3 +10,8 @@ https://cloud.google.com/appengine/articles/modeling?csw=1
 look for it in the list 
 
 https://cloud.google.com/appengine/docs/python/datastore/typesandpropertyclasses
+
+
+Accessing References Values APPENGINE
+
+http://stackoverflow.com/questions/39468952/accessing-referenceproperty-values-in-a-one-to-many-relation-from-a-referenced-k/39469095#39469095

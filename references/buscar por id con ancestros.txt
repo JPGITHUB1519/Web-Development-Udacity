@@ -1,0 +1,8 @@
+
+# converting key to id and getting value by id 
+v_key = ndb.Key(urlsafe= v)
+
+si la entidad tiene un ancestro debemos especificarlo
+post = WikiPostVersion.get_by_id(v_key.id(), parent = ancestor_key)
+
+http://stackoverflow.com/questions/14054889/how-to-query-entities-by-id

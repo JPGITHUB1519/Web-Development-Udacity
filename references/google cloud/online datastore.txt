@@ -1,0 +1,1 @@
+https://console.cloud.google.com/datastore/stats?_ga=1.161841788.176880405.1467812743&project=jean-wiki&ns=&kind=__$ALL_KINDS$__
